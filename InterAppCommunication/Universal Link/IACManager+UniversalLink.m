@@ -138,6 +138,7 @@ st_property_object_method(NSString, errorDomain);
  七：
  注意：通用链接是保证链接的接受者是正规军，不被其它者截获。
  注意：当使用'openURL:options:completionHandler:'打开目标通用链接时，需在options字典中增加字段UIApplicationOpenURLOptionUniversalLinksOnly且值为@(YES)，以保证只打开通用链接APP而不可跳浏览器。
+ 注意：iOS10及以后才能保证UniversalLinksOnly即'仅打开通用链接'的功能。
  八：
  
  */

@@ -285,15 +285,19 @@ typedef NS_ENUM(NSUInteger, IACResponseType) {
 - (void)openURL:(NSURL *)url {
     // 原来的打开链接
     void (^original_openURL)(NSURL *url) = ^(NSURL *url) {
-        BOOL isUniversalLink = [url.scheme.lowercaseString isEqualToString:@"https"];
-        NSDictionary<UIApplicationOpenExternalURLOptionsKey,id> * dic  = @{
-            UIApplicationOpenURLOptionUniversalLinksOnly : @(isUniversalLink)
-        };
-        [[UIApplication sharedApplication] openURL:url options:dic completionHandler:^(BOOL success) {
-            if (success == NO) {
-                
-            }
-        }];
+        if (@available(iOS 10.0, *)) { // 注意：iOS10及以后才能保证UniversalLinksOnly即'仅打开通用链接'的功能。
+            BOOL isUniversalLink = [url.scheme.lowercaseString isEqualToString:@"https"];
+            NSDictionary<UIApplicationOpenExternalURLOptionsKey,id> * dic  = @{
+                UIApplicationOpenURLOptionUniversalLinksOnly : @(isUniversalLink)
+            };
+            [[UIApplication sharedApplication] openURL:url options:dic completionHandler:^(BOOL success) {
+                if (success == NO) {
+                    
+                }
+            }];
+        } else {
+            [[UIApplication sharedApplication] openURL:url];
+        }
     };
     if (self.customOpenURLBlock) {
         NSString     *action     = [[url path] substringFromIndex:1];

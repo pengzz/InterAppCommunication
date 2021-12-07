@@ -17,7 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 外部APP的host
 /// @note
-/// 使用「Universal Link」模式时必传，需设置外部APP的host域名。
+/// 使用「Universal Link」模式时必传，需设置外部APP的host域名。iOS10及以后才能保证UniversalLinksOnly。
 @property (copy, nonatomic) NSString * _Nullable host;
 
 /// 是否是「Universal Link」模式

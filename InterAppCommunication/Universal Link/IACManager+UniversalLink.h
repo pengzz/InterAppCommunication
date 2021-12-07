@@ -70,7 +70,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 当前自身host
 /// @note
-/// 使用「Universal Link」模式时必传，需设置自己APP的host域名。
+/// 使用「Universal Link」模式时必传，需设置自己APP的host域名。iOS10及以后才能保证UniversalLinksOnly。
 @property (copy, nonatomic) NSString * _Nullable host;
 
 /// 是否是「Universal Link」模式
@@ -101,6 +101,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 自定义打开URL方法block
 /// @note
+/// 注意：iOS10及以后才能保证UniversalLinksOnly即'仅打开通用链接'的功能。
 /// 该block回调内容处理请务必注意处理以下：1.判断是否为通用链接，2.openURL
 /// 注意：当使用'openURL:options:completionHandler:'打开通用链接时，需在options字典中增加字段UIApplicationOpenURLOptionUniversalLinksOnly且值为@(YES)，以保证只打开通用链接APP而不可跳浏览器。
 @property(nonatomic, copy) void (^customOpenURLBlock)(IACManager * _Nonnull manager, void (^ _Nonnull original_openURL)(NSURL * _Nullable), NSURL * _Nullable url, NSString * _Nullable action, NSDictionary * _Nullable parameters);
