@@ -45,6 +45,10 @@ typedef NS_ENUM(NSUInteger, IACResponseType) {
     IACResponseTypeCancel
 };
 
+// 新：这个引用必须在上面静态定义的下面正常
+#import "IACClient+UniversalLink.h"
+#import "IACManager+UniversalLink.h"
+
 
 @implementation IACManager {
     NSMutableDictionary *sessions;
@@ -103,9 +107,16 @@ typedef NS_ENUM(NSUInteger, IACResponseType) {
                         if (request.errorCalback) {
                             NSInteger errorCode = [request.client NSErrorCodeForXCUErrorCode:parameters[kXCUErrorCode]];
                             NSString *errorDomain = parameters[kIACErrorDomain] ? parameters[kIACErrorDomain] : IACClientErrorDomain;
+                            NSString *errorMessage = parameters[kXCUErrorMessage];
+                            if (errorMessage == nil) {
+                                errorMessage = parameters[_kXCUErrorMessage] ? parameters[_kXCUErrorMessage] : @"无";
+                            }
+                            if (errorCode == 0) {
+                                errorCode = [request.client NSErrorCodeForXCUErrorCode:parameters[kXCUErrorCode] ? parameters[kXCUErrorCode] : parameters[_kXCUErrorCode]];
+                            }
                             NSError *error = [NSError errorWithDomain:errorDomain
                                                                  code:errorCode
-                                                             userInfo:@{NSLocalizedDescriptionKey: parameters[kXCUErrorMessage]}];
+                                                             userInfo:@{NSLocalizedDescriptionKey: errorMessage}];
                             
                             request.errorCalback(error);
                         }
@@ -136,10 +147,10 @@ typedef NS_ENUM(NSUInteger, IACResponseType) {
             IACSuccessBlock success = ^(NSDictionary *returnParams, BOOL cancelled) {
                 if (cancelled) {
                     if (parameters[kXCUCancel]) {
-                        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:parameters[kXCUCancel]]];
+                        [self openURL:[NSURL URLWithString:parameters[kXCUCancel]]];
                     }
                 } else if (parameters[kXCUSuccess]) {
-                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[parameters[kXCUSuccess] stringByAppendingURLParams:returnParams]]];
+                    [self openURL:[NSURL URLWithString:[parameters[kXCUSuccess] stringByAppendingURLParams:returnParams]]];
                 }
             };
             
@@ -149,7 +160,7 @@ typedef NS_ENUM(NSUInteger, IACResponseType) {
                                                    kXCUErrorMessage: [error localizedDescription],
                                                    kIACErrorDomain: [error domain]
                                                    };
-                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[parameters[kXCUError] stringByAppendingURLParams:errorParams]]];
+                    [self openURL:[NSURL URLWithString:[parameters[kXCUError] stringByAppendingURLParams:errorParams]]];
                 }
             };
 
@@ -173,7 +184,7 @@ typedef NS_ENUM(NSUInteger, IACResponseType) {
                                                kXCUErrorMessage: [NSString stringWithFormat:NSLocalizedString(@"'%@' is not an x-callback-url action supported by %@", nil), action, [self localizedAppName]],
                                                kIACErrorDomain: IACErrorDomain
                                              };
-                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[parameters[kXCUError] stringByAppendingURLParams:errorParams]]];
+                [self openURL:[NSURL URLWithString:[parameters[kXCUError] stringByAppendingURLParams:errorParams]]];
                 return YES;
             }
         }
@@ -196,6 +207,12 @@ typedef NS_ENUM(NSUInteger, IACResponseType) {
     }
     
     NSString *final_url = [NSString stringWithFormat:@"%@://%@/%@?", request.client.URLScheme, kXCUHost, request.action];
+    // 新：注意这个地方是要用client中的host。
+    if (request.client.isHttps) {
+        final_url = [NSString stringWithFormat:@"%@://%@/%@?", request.client.URLScheme, request.client.host, request.action];
+    } else {
+        final_url = [NSString stringWithFormat:@"%@://%@/%@?", request.client.URLScheme, request.client.host?:_kXCUHost, request.action];
+    }
     final_url = [final_url stringByAppendingURLParams:request.parameters];
     final_url = [final_url stringByAppendingURLParams:@{kXCUSource: [self localizedAppName]}];
     
@@ -221,7 +238,7 @@ typedef NS_ENUM(NSUInteger, IACResponseType) {
         
     sessions[request.requestID] = request;
     
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:final_url]];
+    [self openURL:[NSURL URLWithString:final_url]];
 }
 
 
@@ -239,6 +256,13 @@ typedef NS_ENUM(NSUInteger, IACResponseType) {
             [result setObject:obj forKey:key];
         }
     }];
+    // 新：修正「键值移除」
+    if (self.isHttps) {
+        NSArray *allKeys = [self allInnerKeys];
+        NSMutableDictionary *m_dictionary = dictionary.mutableCopy;
+        [m_dictionary removeObjectsForKeys:allKeys];
+        [result addEntriesFromDictionary:m_dictionary];
+    }
     
     // Adds x-source parameter as this is needed to inform the user
     if (dictionary[kXCUSource]) {
@@ -256,5 +280,29 @@ typedef NS_ENUM(NSUInteger, IACResponseType) {
     
     return appname;
 }
-                                                                  
+
+// 新：找开URL
+- (void)openURL:(NSURL *)url {
+    // 原来的打开链接
+    void (^original_openURL)(NSURL *url) = ^(NSURL *url) {
+        BOOL isUniversalLink = [url.scheme.lowercaseString isEqualToString:@"https"];
+        NSDictionary<UIApplicationOpenExternalURLOptionsKey,id> * dic  = @{
+            UIApplicationOpenURLOptionUniversalLinksOnly : @(isUniversalLink)
+        };
+        [[UIApplication sharedApplication] openURL:url options:dic completionHandler:^(BOOL success) {
+            if (success == NO) {
+                
+            }
+        }];
+    };
+    if (self.customOpenURLBlock) {
+        NSString     *action     = [[url path] substringFromIndex:1];
+        NSDictionary *parameters = [url.query parseURLParams];
+        self.customOpenURLBlock(self, original_openURL, url, action, parameters);
+        return;
+    } else {
+        original_openURL(url);
+    }
+}
+
 @end

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1CB118AD274C904A00B716F0 /* IACManager+UniversalLink.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB118AC274C904A00B716F0 /* IACManager+UniversalLink.m */; };
+		1CB118B0274C914B00B716F0 /* IACClient+UniversalLink.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CB118AF274C914B00B716F0 /* IACClient+UniversalLink.m */; };
 		A9D56A4016CED7D400BD22D1 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9D56A3F16CED7D400BD22D1 /* UIKit.framework */; };
 		A9D56A4216CED7D400BD22D1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9D56A4116CED7D400BD22D1 /* Foundation.framework */; };
 		A9D56A4416CED7D400BD22D1 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9D56A4316CED7D400BD22D1 /* CoreGraphics.framework */; };
@@ -33,6 +35,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1CB118AB274C904A00B716F0 /* IACManager+UniversalLink.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "IACManager+UniversalLink.h"; sourceTree = "<group>"; };
+		1CB118AC274C904A00B716F0 /* IACManager+UniversalLink.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "IACManager+UniversalLink.m"; sourceTree = "<group>"; };
+		1CB118AE274C914B00B716F0 /* IACClient+UniversalLink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "IACClient+UniversalLink.h"; sourceTree = "<group>"; };
+		1CB118AF274C914B00B716F0 /* IACClient+UniversalLink.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "IACClient+UniversalLink.m"; sourceTree = "<group>"; };
 		A9D56A3C16CED7D400BD22D1 /* SoundsPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SoundsPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9D56A3F16CED7D400BD22D1 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		A9D56A4116CED7D400BD22D1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -84,6 +90,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1CB118A4274C8F7700B716F0 /* Universal Link */ = {
+			isa = PBXGroup;
+			children = (
+				1CB118AE274C914B00B716F0 /* IACClient+UniversalLink.h */,
+				1CB118AF274C914B00B716F0 /* IACClient+UniversalLink.m */,
+				1CB118AB274C904A00B716F0 /* IACManager+UniversalLink.h */,
+				1CB118AC274C904A00B716F0 /* IACManager+UniversalLink.m */,
+			);
+			path = "Universal Link";
+			sourceTree = "<group>";
+		};
 		A9D56A3316CED7D400BD22D1 = {
 			isa = PBXGroup;
 			children = (
@@ -147,6 +164,7 @@
 		A9D56A6216CED7F000BD22D1 /* InterAppCommunication */ = {
 			isa = PBXGroup;
 			children = (
+				1CB118A4274C8F7700B716F0 /* Universal Link */,
 				A9D56A6316CED7F000BD22D1 /* IACClient.h */,
 				A9D56A6416CED7F000BD22D1 /* IACClient.m */,
 				A9D56A6516CED7F000BD22D1 /* IACDelegate.h */,
@@ -215,6 +233,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = A9D56A3316CED7D400BD22D1;
@@ -253,12 +272,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1CB118B0274C914B00B716F0 /* IACClient+UniversalLink.m in Sources */,
 				A9D56A4C16CED7D400BD22D1 /* main.m in Sources */,
 				A9D56A5016CED7D400BD22D1 /* SPAppDelegate.m in Sources */,
 				A9D56A5916CED7D400BD22D1 /* SPViewController.m in Sources */,
 				A9D56A6C16CED7F000BD22D1 /* IACClient.m in Sources */,
 				A9D56A6D16CED7F000BD22D1 /* IACManager.m in Sources */,
 				A9D56A6E16CED7F000BD22D1 /* IACRequest.m in Sources */,
+				1CB118AD274C904A00B716F0 /* IACManager+UniversalLink.m in Sources */,
 				A9D56A6F16CED7F000BD22D1 /* NSString+IACExtensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -382,6 +403,7 @@
 				A9D56A6116CED7D400BD22D1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
